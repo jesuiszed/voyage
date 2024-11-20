@@ -1,0 +1,125 @@
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifier Voyage</title>
+    {% tailwind_css %}
+    {% tailwind_preload_css %}
+    <script>
+        function validateForm() {
+            const depart = document.getElementById('VilleDepart').value;
+            const arrivee = document.getElementById('VilleArrivee').value;
+            const heureDepart = document.getElementById('heureDepart').value;
+            const heureArrivee = document.getElementById('HeureArrive').value;
+            const prix = document.getElementById('Prix').value;
+            const places = document.getElementById('NbrPlaceVide').value;
+
+            if (depart === arrivee) {
+                alert('La ville de départ et d\'arrivée ne peuvent pas être identiques');
+                return false;
+            }
+
+            if (places < 0) {
+                alert('Le nombre de places ne peut pas être négatif');
+                return false;
+            }
+
+            if (prix < 0) {
+                alert('Le prix ne peut pas être négatif');
+                return false;
+            }
+
+            // Comparer les heures
+            const departTime = new Date(`2000-01-01T${heureDepart}`);
+            const arriveeTime = new Date(`2000-01-01T${heureArrivee}`);
+            
+            if (departTime >= arriveeTime) {
+                alert('L\'heure d\'arrivée doit être postérieure à l\'heure de départ');
+                return false;
+            }
+
+            return true;
+        }
+
+        // Fonction pour mettre en majuscules la plaque d'immatriculation
+        function upperCase(input) {
+            input.value = input.value.toUpperCase();
+        }
+    </script>
+</head>
+<body class="bg-gray-100 font-sans">
+    <div class="max-w-4xl mx-auto my-8 bg-white p-8 rounded-lg shadow-lg">
+        <h1 class="text-3xl font-semibold text-center mb-6">Modifier Voyage</h1>
+        <form class="space-y-6" method="post" onsubmit="return validateForm()">
+            {% csrf_token %}
+            
+            <div class="space-y-2">
+                <label for="NomChauffeur" class="block text-lg font-medium">Nom du Chauffeur</label>
+                <input type="text" id="NomChauffeur" name="NomChauffeur" value="{{ form.NomChauffeur.value }}" required 
+                    class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" />
+            </div>
+
+            <div class="space-y-2">
+                <label for="plaque" class="block text-lg font-medium">Plaque d'immatriculation</label>
+                <input type="text" id="plaque" name="plaque" value="{{ form.plaque.value }}" required onkeyup="upperCase(this)"
+                    pattern="[A-Z0-9-]{1,10}"
+                    title="Format: lettres majuscules, chiffres et tirets uniquement"
+                    class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" />
+            </div>
+
+            <div class="space-y-2">
+                <label for="NbrPlaceVide" class="block text-lg font-medium">Nombre de places vides</label>
+                <input type="number" id="NbrPlaceVide" name="NbrPlaceVide" value="{{ form.NbrPlaceVide.value }}" required min="1" max="50"
+                    class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" />
+            </div>
+
+            <div class="space-y-2">
+                <label for="VilleDepart" class="block text-lg font-medium">Ville de départ</label>
+                <select id="VilleDepart" name="VilleDepart" required 
+                    class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
+                    <option value="">Sélectionnez une ville</option>
+                    <option value="Paris" {% if form.VilleDepart.value == 'Paris' %}selected{% endif %}>Paris</option>
+                    <option value="Lyon" {% if form.VilleDepart.value == 'Lyon' %}selected{% endif %}>Lyon</option>
+                    <option value="Marseille" {% if form.VilleDepart.value == 'Marseille' %}selected{% endif %}>Marseille</option>
+                </select>
+            </div>
+
+            <div class="space-y-2">
+                <label for="VilleArrivee" class="block text-lg font-medium">Ville d'arrivée</label>
+                <select id="VilleArrivee" name="VilleArrivee" required 
+                    class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
+                    <option value="">Sélectionnez une ville</option>
+                    <option value="Paris" {% if form.VilleArrivee.value == 'Paris' %}selected{% endif %}>Paris</option>
+                    <option value="Lyon" {% if form.VilleArrivee.value == 'Lyon' %}selected{% endif %}>Lyon</option>
+                    <option value="Marseille" {% if form.VilleArrivee.value == 'Marseille' %}selected{% endif %}>Marseille</option>
+                </select>
+            </div>
+
+            <div class="space-y-2">
+                <label for="heureDepart" class="block text-lg font-medium">Heure de départ</label>
+                <input type="time" id="heureDepart" name="heureDepart" value="{{ form.heureDepart.value }}" required 
+                    class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" />
+            </div>
+
+            <div class="space-y-2">
+                <label for="HeureArrive" class="block text-lg font-medium">Heure d'arrivée</label>
+                <input type="time" id="HeureArrive" name="HeureArrive" value="{{ form.HeureArrive.value }}" required 
+                    class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" />
+            </div>
+
+            <div class="space-y-2">
+                <label for="Prix" class="block text-lg font-medium">Prix du voyage</label>
+                <input type="number" id="Prix" name="Prix" value="{{ form.Prix.value }}" required min="0" step="0.01"
+                    class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" />
+            </div>
+
+            <button type="submit" 
+                class="w-full py-3 mt-4 bg-blue-500 text-white font-semibold rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                Modifier
+            </button>
+        </form>
+    </div>
+</body>
+</html>

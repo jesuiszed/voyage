@@ -1,0 +1,52 @@
+{% include 'base.html' %}
+{% block content %}
+<!-- Container principal -->
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-8">Liste des Voyages</h1>
+
+        <!-- Bouton de téléchargement -->
+        <div class="flex justify-end mb-4">
+            <a href="{% url 'export_voyages' %}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+               onclick="return confirm('Voulez-vous télécharger le fichier Excel ?');">Télécharger en Excel</a>
+        </div>
+
+        <!-- Tableau de données -->
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-white shadow-md rounded-lg">
+                <thead>
+                    <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                        <th class="py-3 px-6 text-left">Chauffeur</th>
+                        <th class="py-3 px-6 text-left">Numéro de Plaque</th>
+                        <th class="py-3 px-6 text-left">Places Vides</th>
+                        <th class="py-3 px-6 text-left">Ville de Départ</th>
+                        <th class="py-3 px-6 text-left">Ville d'Arrivée</th>
+                        <th class="py-3 px-6 text-left">Heure de Départ</th>
+                        <th class="py-3 px-6 text-left">Date</th>
+                        <th class="py-3 px-6 text-left">Prix</th>
+                        <th class="py-3 px-6 text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="text-gray-700 text-sm font-light">
+                    {% for voyage in Voyages %}
+                    <tr class="border-b border-gray-200 hover:bg-gray-100">
+                        <td class="py-3 px-6">{{ voyage.NomChauffeur }}</td>
+                        <td class="py-3 px-6">{{ voyage.plaque }}</td>
+                        <td class="py-3 px-6">{{ voyage.NbrPlaceVide }}</td>
+                        <td class="py-3 px-6">{{ voyage.VilleDepart }}</td>
+                        <td class="py-3 px-6">{{ voyage.VilleArrivee }}</td>
+                        <td class="py-3 px-6">{{ voyage.heureDepart }}</td>
+                        <td class="py-3 px-6">{{ voyage.date }}</td>
+                        <td class="py-3 px-6">{{ voyage.Prix }}</td>
+                        <td class="py-3 px-6 text-center">
+                            <a href="{% url 'modifier_voyage' voyage.pk %}" class="text-blue-500 hover:underline">Modifier</a> |
+                            <a href="{% url 'supprimer_voyage' voyage.pk %}" class="text-red-500 hover:underline"
+                               onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce voyage ?');">Supprimer</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+
